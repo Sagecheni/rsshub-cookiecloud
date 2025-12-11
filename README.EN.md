@@ -89,6 +89,19 @@ Here are some JS examples:
   }
   ```
 
+* [bilibili](https://docs.rsshub.app/zh/routes/social-media#bilibili)
+
+  ```js
+  export default {
+      "BILIBILI_COOKIE_{DedeUserID}": [
+          {
+              "domain": "bilibili.com",
+              "name": ["SESSDATA", "bili_jct", "DedeUserID"]
+          }
+      ]
+  }
+  ```
+
 Example explanation:
 
 * Each JS file exports an object where the key is the environment variable name required by RSSHub, and the value is an array.
@@ -98,3 +111,5 @@ Example explanation:
     |--------|--------|----------|---------------------------------------------------------------------------------------------------------------------------|-------------------|
   | domain | string | No       | Keyword of the cookie domain. Match succeeds if the domain contains this keyword.                                         | `xiaohongshu.com` |
   | name   | string | Yes      | Cookie name. Match succeeds if the cookie name exactly matches. Leave empty to get all cookies under the domain.          | `_jdb_session`    |
+
+* If the key contains a `{CookieName}` placeholder, it will be replaced with the value of the cookie with that name (as shown in the bilibili example).

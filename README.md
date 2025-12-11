@@ -82,6 +82,17 @@ services:
        ]
    }
    ```
++ [哔哩哔哩](https://docs.rsshub.app/zh/routes/social-media#bilibili)
+   ```js
+   export default {
+       "BILIBILI_COOKIE_{DedeUserID}": [
+           {
+               "domain": "bilibili.com",
+               "name": ["SESSDATA", "bili_jct", "DedeUserID"]
+           }
+       ]
+   }
+   ```
 
 示例说明：
 
@@ -92,3 +103,5 @@ services:
   |--------|--------------|----|--------------------------------------------------------------------------------------------------------|------------------------------------------------|
   | domain | string       | 否  | Cookie 所属域名关键词，当域名包含关键词时视为匹配成功。                                                                        | `xiaohongshu.com`                              |
   | name   | string/array | 是  | Cookie 名称，当 Cookie 名称完全一致时视为匹配成功；若为 array 则代表需要同时获取多个 name 的 cookie，存在至少一个即视为匹配成功；若留空则代表获取域名下所有 Cookie。 | `_jdb_session`, `["z_c0", "__zse_ck", "d_c0"]` |
+
++ 如果 key 中包含 `{CookieName}` 占位符，将以匹配到的同名 Cookie 值替换该占位符，例如上方哔哩哔哩示例中的 `{DedeUserID}`。

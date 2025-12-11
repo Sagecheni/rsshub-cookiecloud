@@ -61,11 +61,14 @@ const cloudCookie = async () => {
                 if (!cookieCloudItem.domain.includes(query.domain)) {
                     continue;
                 }
-                if (typeof query.name === 'string' && cookieCloudItem.name === query.name) {
+                if (typeof query.name === 'string') {
+                    if (cookieCloudItem.name !== query.name) {
+                        continue;
+                    }
                     result = cookieCloudItem.value;
                     break;
                 }
-                if (typeof query.name === typeof Array && !(cookieCloudItem.name in query.name)) {
+                if (Array.isArray(query.name) && !query.name.includes(cookieCloudItem.name)) {
                     continue;
                 }
                 if (result === undefined) {
@@ -76,15 +79,39 @@ const cloudCookie = async () => {
             if (result === undefined) {
                 break;
             }
-            if (typeof result === 'object') {
-                result = Object.entries(result).map(([k,v]) => `${k}=${v};`).join(' ');
+            const rawResult = typeof result === 'object' ? result : undefined;
+            let output = result;
+            if (rawResult) {
+                output = Object.entries(rawResult)
+                    .map(([k, v]) => `${k}=${v};`)
+                    .join(' ');
             }
 
-            if (_envs[key] === result) {
+            let resolvedKey = key;
+            const placeholderRegex = /\{([^{}]+)\}/g;
+            let placeholderMissing = false;
+            let hasPlaceholder = false;
+            resolvedKey = key.replace(placeholderRegex, (match, name) => {
+                hasPlaceholder = true;
+                if (!rawResult || rawResult[name] === undefined) {
+                    placeholderMissing = true;
+                    return match;
+                }
+                return rawResult[name];
+            });
+
+            if (hasPlaceholder && placeholderMissing) {
+                if (CookieCloudConfig.debug) {
+                    console.log(`[CookieCloud] skip ${key} because placeholder cookie missing.`);
+                }
                 continue;
             }
-            newEnvs[key] = result;
-            _envs[key] = result;
+
+            if (_envs[resolvedKey] === output) {
+                continue;
+            }
+            newEnvs[resolvedKey] = output;
+            _envs[resolvedKey] = output;
         }
     }
     if (Object.keys(newEnvs).length > 0) {
