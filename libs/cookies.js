@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import { CookieCloudDir } from "./dir.js";
 
 // export interface CookieCloudQueryParam {
@@ -14,8 +15,8 @@ import { CookieCloudDir } from "./dir.js";
 // export type CookieMap = Map<string, CookieCloudQueryParam[]>;
 export const cookieMap = new Map();
 
-const __cookiesDir = path.resolve(CookieCloudDir, './libs/cookies')
-const files = fs.readdirSync(__cookiesDir).filter(f => f.endsWith('.js'));
+const __cookiesDir = path.resolve(CookieCloudDir, './libs/cookies');
+const files = fs.readdirSync(__cookiesDir).filter((f) => f.endsWith('.js'));
 
 for (const file of files) {
     const filePath = path.resolve(__cookiesDir, file);

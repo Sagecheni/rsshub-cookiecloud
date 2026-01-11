@@ -1,8 +1,9 @@
-import {importJs, findJs, readJs} from "./import-js.js";
-import fs from "node:fs"
+import fs from "node:fs";
 
-let _setConfig = undefined;
-let _config = undefined;
+import {findJs, importJs, readJs} from "./import-js.js";
+
+let _setConfig;
+let _config;
 
 export async function findSetConfigFunc() {
     if (_setConfig !== undefined) {
@@ -11,12 +12,12 @@ export async function findSetConfigFunc() {
 
     const configRaw = await findJs("config");
     if (configRaw === undefined) {
-        console.log('[CookieCloud] cannot find config-xxx.mjs, CookieCloud not load.')
+        console.log('[CookieCloud] cannot find config-xxx.mjs, CookieCloud not load.');
         return false;
     }
     const configRawJs = await readJs("config");
     if (configRawJs === undefined) {
-        console.log('[CookieCloud] cannot read config-xxx.mjs, CookieCloud not load.')
+        console.log('[CookieCloud] cannot read config-xxx.mjs, CookieCloud not load.');
         return false;
     }
     let setConfigFuncName = configRawJs.match(/[A-Za-z0-9]+=\(\)/);
@@ -24,8 +25,8 @@ export async function findSetConfigFunc() {
         console.log('[CookieCloud] cannot find setConfig function, CookieCloud not load.');
         return false;
     }
-    setConfigFuncName = setConfigFuncName[0]
-    setConfigFuncName = setConfigFuncName.substring(0, setConfigFuncName.length - 3)
+    setConfigFuncName = setConfigFuncName[0];
+    setConfigFuncName = setConfigFuncName.slice(0, Math.max(0, setConfigFuncName.length - 3));
     let exports = configRawJs.match(/export{(.*?)}/);
     if (!exports) {
         console.log('[CookieCloud] cannot find exports in config-xxx.mjs, CookieCloud not load.');
@@ -55,16 +56,16 @@ export const setConfig = (env) => {
     if (_setConfig !== undefined) {
         _setConfig(env);
     }
-}
+};
 
 export const getConfig = (rawKeys) => {
     const keys = rawKeys.split(',');
     let config = _config;
     for (const key of keys) {
         if (typeof config !== 'object' || !(key in config)) {
-            return undefined;
+            return;
         }
         config = config[key];
     }
     return typeof config === 'string' ? config : JSON.stringify(config);
-}
+};

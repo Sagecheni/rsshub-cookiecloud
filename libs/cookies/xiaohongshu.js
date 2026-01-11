@@ -4,4 +4,4 @@ export default {
             "domain": "xiaohongshu.com"
         }
     ]
-}
+};

@@ -1,10 +1,11 @@
-import { createCookieCloudSyncJob } from "./libs/cookie-cloud.js";
-import { CookieCloudConfig } from "./libs/config.js";
-import { CookieCloudDir } from "./libs/dir.js";
-import { findSetConfigFunc } from "./libs/set-config.js";
-import { route } from "./libs/route.js";
-import { distJsRegExp, readJs, findJs } from "./libs/import-js.js";
 import { pathToFileURL } from 'node:url';
+
+import { CookieCloudConfig } from "./libs/config.js";
+import { createCookieCloudSyncJob } from "./libs/cookie-cloud.js";
+import { CookieCloudDir } from "./libs/dir.js";
+import { distJsRegExp, findJs, readJs } from "./libs/import-js.js";
+import { route } from "./libs/route.js";
+import { findSetConfigFunc } from "./libs/set-config.js";
 
 async function setupCookieCloud() {
     try {
@@ -45,7 +46,7 @@ async function setupCookieCloud() {
             console.log('[CookieCloud] failed to find routes-xxx.mjs in dist, CookieCloud not load.');
             return;
         }
-        console.log(`[CookieCloud] hacking ${routerFile}`)
+        console.log(`[CookieCloud] hacking ${routerFile}`);
         const routesModule = await import(pathToFileURL(routerImportPath).href);
         console.log('[CookieCloud] routes module keys:', Object.keys(routesModule || {}));
         const routes = routesModule?.default ?? routesModule?.route;
@@ -84,8 +85,8 @@ async function setupCookieCloud() {
 
         setTimeout(async () => await createCookieCloudSyncJob(false), 10);
         console.log('[CookieCloud] CookieCloud loaded.');
-    } catch (e) {
-        console.log('[CookieCloud] CookieCloud load failed: ', e);
+    } catch (error) {
+        console.log('[CookieCloud] CookieCloud load failed:', error);
     }
 }
 

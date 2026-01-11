@@ -1,7 +1,8 @@
-import { cookieMap } from './cookies.js';
-import { CookieCloudConfig } from './config.js'
-import { setConfig } from './set-config.js'
 import CryptoJS from 'crypto-js';
+
+import { CookieCloudConfig } from './config.js';
+import { cookieMap } from './cookies.js';
+import { setConfig } from './set-config.js';
 
 // interface CookieItem {
 //     domain: string;
@@ -49,7 +50,7 @@ const cloudCookie = async () => {
             }
         }
     } catch (error) {
-        console.log(`[CookieCloud] error during update: `, error);
+        console.log(`[CookieCloud] error during update:`, error);
         return;
     }
 
@@ -91,7 +92,7 @@ const cloudCookie = async () => {
             const placeholderRegex = /\{([^{}]+)\}/g;
             let placeholderMissing = false;
             let hasPlaceholder = false;
-            resolvedKey = key.replace(placeholderRegex, (match, name) => {
+            resolvedKey = key.replaceAll(placeholderRegex, (match, name) => {
                 hasPlaceholder = true;
                 if (!rawResult || rawResult[name] === undefined) {
                     placeholderMissing = true;
@@ -126,7 +127,7 @@ const cloudCookie = async () => {
 };
 
 const cookieDecrypt = (uuid, encrypted, password) => {
-    const the_key = CryptoJS.MD5(`${uuid}-${password}`).toString().substring(0, 16);
+    const the_key = CryptoJS.MD5(`${uuid}-${password}`).toString().slice(0, 16);
     const decrypted = CryptoJS.AES.decrypt(encrypted, the_key).toString(CryptoJS.enc.Utf8);
     return JSON.parse(decrypted);
 };

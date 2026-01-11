@@ -5,4 +5,4 @@ export default {
       "name": "_jdb_session"
     }
   ]
-}
+};

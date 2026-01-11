@@ -1,5 +1,5 @@
-import {createCookieCloudSyncJob} from './cookie-cloud.js';
 import {CookieCloudConfig} from './config.js';
+import {createCookieCloudSyncJob} from './cookie-cloud.js';
 import {getConfig} from "./set-config.js";
 
 async function handler(ctx) {
@@ -16,9 +16,8 @@ async function handler(ctx) {
         await createCookieCloudSyncJob(CookieCloudConfig, true);
     }
 
-    let config = getConfig(rawKeys);
-    if (config === undefined) {
-        return {
+    const config = getConfig(rawKeys);
+    return config === undefined ? {
             title: 'CookieCloud 测试',
             allowEmpty: true,
             item: [
@@ -28,9 +27,7 @@ async function handler(ctx) {
                 }
             ],
             ttl: 0,
-        };
-    } else {
-        return {
+        } : {
             title: 'CookieCloud 测试',
             allowEmpty: true,
             item: [
@@ -41,7 +38,6 @@ async function handler(ctx) {
             ],
             ttl: 0,
         };
-    }
 }
 
 export const route = {
@@ -63,7 +59,7 @@ export const route = {
             },
             name: 'CookieCloud',
             maintainers: ['sgpublic'],
-            handler: handler,
+            handler,
         }
     }
 };
